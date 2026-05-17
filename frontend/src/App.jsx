@@ -4,7 +4,7 @@ import store from './store/store';
 
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
-import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
+import ForgotPasswordPage from './pages/auth/Forgotpasswordpage';
 import ProtectedRoute from './components/ProtectedRoute';
 
 export default function App() {
