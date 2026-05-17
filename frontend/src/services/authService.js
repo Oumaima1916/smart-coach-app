@@ -2,8 +2,31 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // Helper — throw readable error from Express response
 async function handleResponse(res) {
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || `Erreur ${res.status}`);
+  if (res.status === 204 || res.status === 205) {
+    return null;
+  }
+
+  const contentType = res.headers.get('content-type') || '';
+  const isJson = contentType.includes('application/json');
+
+  let data = null;
+  if (isJson) {
+    data = await res.json();
+  } else {
+    const text = await res.text();
+    data = text || null;
+  }
+
+  if (!res.ok) {
+    const message =
+      data && typeof data === 'object' && 'message' in data
+        ? data.message
+        : typeof data === 'string' && data.trim()
+          ? data
+          : `Erreur ${res.status}`;
+    throw new Error(message);
+  }
+
   return data;
 }
 
