@@ -1,12 +1,35 @@
-const express = require('express');
-const cors = require('cors');
+require('dotenv').config();
 
-const app = express();
+const express      = require('express');
+const cors         = require('cors');
+const workoutRoutes = require('./routes/workoutRoutes');
+const programRoutes = require('./routes/programRoutes');
+const errorHandler  = require('./middleware/errorHandler');
+
+const app  = express();
+const PORT = process.env.PORT || 5000;
+
+// ── middleware ────────────────────────────────────────────────────────────────
+
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => {
-    res.json({ message: "Smart Coach API is UP! 🚀" });
+// ── routes ────────────────────────────────────────────────────────────────────
+
+app.get('/', (_req, res) => {
+  res.json({ message: 'Smart Coach API is UP! 🚀' });
 });
 
-app.listen(5000, () => console.log("Backend khdam f port 5000"));
+// plan catalogue — powers the Workout.jsx grid
+app.use('/api/programs', programRoutes);
+
+// live session tracking — powers WorkoutDetails.jsx start/pause/resume/finish flow
+app.use('/api/workouts', workoutRoutes);
+
+// ── error handler (must be last) ──────────────────────────────────────────────
+
+app.use(errorHandler);
+
+app.listen(PORT, () => {
+  console.log(`Backend running on port ${PORT}`);
+});
