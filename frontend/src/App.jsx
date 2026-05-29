@@ -3,12 +3,12 @@ import { Provider } from 'react-redux';
 import store from './store/store';
 
 import MainLayout from './components/layout/MainLayout';
-// temporarily disabled protected route bypass to skip auth backend checking
-// import ProtectedRoute from './components/ProtectedRoute';
+import ProtectedRoute from './components/ProtectedRoute';
 
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import ForgotPasswordPage from './pages/auth/Forgotpasswordpage';
+import ProfilePage from './pages/auth/ProfilePage';
 import Workout from './pages/workout/Workout';
 import Nutrition from './pages/nutrition/Nutrition';
 import AICoach from './pages/aicoach/AICoach';
@@ -25,17 +25,20 @@ export default function App() {
 
           {/* main core layout wrapper open without protected route check */}
           <Route element={<MainLayout />}>
-            <Route
-              path="/dashboard"
-              element={
-                <div className="p-8 text-gray-600 max-w-[1200px] mx-auto">
-                  Dashboard (coming soon)
-                </div>
-              }
-            />
-            <Route path="/workout" element={<Workout />} />
-            <Route path="/nutrition" element={<Nutrition />} />
-            <Route path="/ai-coach" element={<AICoach />} />
+            <Route element={<ProtectedRoute />}>
+              <Route
+                path="/dashboard"
+                element={
+                  <div className="p-8 text-gray-600 max-w-[1200px] mx-auto">
+                    Dashboard (coming soon)
+                  </div>
+                }
+              />
+              <Route path="/workout" element={<Workout />} />
+              <Route path="/nutrition" element={<Nutrition />} />
+              <Route path="/ai-coach" element={<AICoach />} />
+              <Route path="/profile" element={<ProfilePage />} />
+            </Route>
           </Route>
 
           {/* modified defaults to drop you straight into your active feature page */}

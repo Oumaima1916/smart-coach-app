@@ -1,6 +1,19 @@
 -- run this once to initialise the schema
 -- psql -U postgres -d smart_coach_db -f backend/db/migrate.sql
 
+CREATE TABLE IF NOT EXISTS users (
+  id                        SERIAL PRIMARY KEY,
+  first_name                VARCHAR(100) NOT NULL,
+  last_name                 VARCHAR(100) NOT NULL,
+  email                     VARCHAR(255) NOT NULL UNIQUE,
+  password_hash             TEXT         NOT NULL,
+  password_salt             TEXT         NOT NULL,
+  reset_password_token_hash TEXT,
+  reset_password_expires_at  TIMESTAMPTZ,
+  created_at                TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+  updated_at                TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS exercises (
   id            SERIAL PRIMARY KEY,
   name          VARCHAR(150)    NOT NULL,
@@ -36,7 +49,7 @@ CREATE TABLE IF NOT EXISTS workout_plan_exercises (
 -- one row per "Start Workout" press — the heart of session tracking
 CREATE TABLE IF NOT EXISTS workout_logs (
   id                    SERIAL PRIMARY KEY,
-  user_id               INTEGER,            -- nullable until auth is wired up
+  user_id               INTEGER             REFERENCES users(id) ON DELETE SET NULL,
   plan_id               INTEGER             REFERENCES workout_plans(id) ON DELETE SET NULL,
   plan_title            VARCHAR(200),       -- snapshot so log survives plan edits
   status                VARCHAR(20)   NOT NULL DEFAULT 'active'
