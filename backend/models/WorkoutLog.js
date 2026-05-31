@@ -120,6 +120,27 @@ async function findLogsByUser(userId, limit = 20) {
   return rows;
 }
 
+async function getSummaryByUser(userId) {
+  const { rows } = await pool.query(
+    `SELECT
+       COUNT(*)::INT AS total_workouts,
+       COALESCE(SUM(calories_burned), 0)::INT AS total_calories,
+       COALESCE(AVG(active_duration_sec), 0)::INT AS avg_duration_sec,
+       COUNT(DISTINCT DATE(started_at))::INT AS active_days
+     FROM workout_logs
+     WHERE user_id = $1
+       AND status = 'completed'`,
+    [userId]
+  );
+
+  return rows[0] || {
+    total_workouts: 0,
+    total_calories: 0,
+    avg_duration_sec: 0,
+    active_days: 0,
+  };
+}
+
 module.exports = {
   createLog,
   findLogById,
@@ -130,4 +151,5 @@ module.exports = {
   finaliseLog,
   markStepCompleted,
   findLogsByUser,
+  getSummaryByUser,
 };

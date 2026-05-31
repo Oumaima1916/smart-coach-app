@@ -167,8 +167,20 @@ async function getWorkoutHistory(req, res) {
   }
 
   const limit = Math.min(parseInt(req.query.limit, 10) || 20, 100);
-  const logs  = await WorkoutLog.findLogsByUser(userId, limit);
+  const logs = await WorkoutLog.findLogsByUser(userId, limit);
   return res.json({ logs });
+}
+
+// ─── GET /api/workouts/summary ────────────────────────────────────────────────
+// returns dashboard summary metrics for the authenticated user
+async function getWorkoutSummary(req, res) {
+  const userId = req.user?.id;
+  if (!userId) {
+    return res.status(401).json({ message: 'Authentication required.' });
+  }
+
+  const summary = await WorkoutLog.getSummaryByUser(userId);
+  return res.json({ summary });
 }
 
 // ─── GET /api/workouts/:logId ─────────────────────────────────────────────────
@@ -186,5 +198,6 @@ module.exports = {
   resumeWorkoutSession,
   finishWorkoutSession,
   getWorkoutHistory,
+  getWorkoutSummary,
   getSessionById,
 };

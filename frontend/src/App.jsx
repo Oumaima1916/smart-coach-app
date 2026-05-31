@@ -12,6 +12,8 @@ import ProfilePage from './pages/auth/ProfilePage';
 import Workout from './pages/workout/Workout';
 import Nutrition from './pages/nutrition/Nutrition';
 import AICoach from './pages/aicoach/AICoach';
+import Dashboard from './pages/dashboard/Dashboard';
+import Progress from './pages/progress/Progress';
 
 export default function App() {
   return (
@@ -26,14 +28,8 @@ export default function App() {
           {/* main core layout wrapper open without protected route check */}
           <Route element={<MainLayout />}>
             <Route element={<ProtectedRoute />}>
-              <Route
-                path="/dashboard"
-                element={
-                  <div className="p-8 text-gray-600 max-w-[1200px] mx-auto">
-                    Dashboard (coming soon)
-                  </div>
-                }
-              />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/progress" element={<Progress />} />
               <Route path="/workout" element={<Workout />} />
               <Route path="/nutrition" element={<Nutrition />} />
               <Route path="/ai-coach" element={<AICoach />} />
@@ -41,9 +37,9 @@ export default function App() {
             </Route>
           </Route>
 
-          {/* modified defaults to drop you straight into your active feature page */}
-          <Route path="/" element={<Navigate to="/workout" replace />} />
-          <Route path="*" element={<Navigate to="/workout" replace />} />
+          {/* modified defaults to drop you straight into your dashboard */}
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </BrowserRouter>
     </Provider>
